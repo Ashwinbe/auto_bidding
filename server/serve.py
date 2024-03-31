@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import sqlite3
-
 from components.dataframe import create_filtered_df
 from components.proposal import generate_proposal
-from components.freelancer import _get_project_by_id, _place_project_bid
+from components.freelancer import _get_project_by_id
+from components.freelancer import _place_project_bid
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -51,23 +50,13 @@ def generate_proposal_route():
     else:
         return jsonify({'error': 'Method not allowed'}), 405
 
+
 @app.route('/place_bid', methods=['POST'])
 def place_bid():
     project_id = request.args.get('project_id')
     amount = request.args.get('amount')
     proposal = request.args.get('proposal')
     return _place_project_bid(project_id, amount, proposal)
-
-@app.route('/read_projects_db', methods=['GET'])
-def read_project_db():
-    conn = sqlite3.connect('projects.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM projects")
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify({'projects': rows})
-
 
 if __name__ == '__main__':
     app.run(debug=True)
