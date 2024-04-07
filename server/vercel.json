@@ -1,0 +1,9 @@
+{
+    "version":2,
+    "builds":[
+      {"src": "serve.py", "use": "@vercel/python3"}
+    ],
+    "routes": [
+      {"src": "/(.*)", "dest": "serve.py"}
+    ]
+}
